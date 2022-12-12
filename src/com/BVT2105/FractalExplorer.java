@@ -41,7 +41,8 @@ public class FractalExplorer {
     //Создадим интерфейс
     public void setGUI() {
         JFrame frame = new JFrame("Fractal Generator");
-        // Создадим новые панели
+        JButton buttonReset = new JButton("Reset");
+        JButton buttonSave = new JButton("Save to disk");
         JPanel jPanel_1 = new JPanel();
         JPanel jPanel_2 = new JPanel();
         JLabel label = new JLabel("Fractal: ");
@@ -58,12 +59,10 @@ public class FractalExplorer {
         comboBox.addActionListener(new ActionHandler());
 
         //Добавим реализацию кнопки сброса
-        buttonReset = new JButton("Reset");
         buttonReset.setActionCommand("Reset");
         buttonReset.addActionListener(new ActionHandler());
 
         //Кнопку сохранения на диск
-        buttonSave = new JButton("Save image");
         buttonSave.setActionCommand("Save");
         buttonSave.addActionListener(new ActionHandler());
 
@@ -86,12 +85,21 @@ public class FractalExplorer {
 
     //функция рендеринга изображения
     private void drawFractal() {
-        enableGUI(false);
-        rowsRemaining = displaySize;
-        for (int i = 0; i < displaySize; i++) {
-            FractalWorker drawRow = new FractalWorker(i);
-            drawRow.execute();
+        for (int x = 0; x < displaySize; x++) {
+            for (int y = 0; y < displaySize; y++) {
+                int counter = fractalGenerator.numIterations(FractalGenerator.getCoord(range.x, range.x + range.width, displaySize, x),
+                        fractalGenerator.getCoord(range.y, range.y + range.width, displaySize, y));
+                if (counter == -1) {
+                    imageDisplay.drawPixel(x, y, 0);
+                }
+                else {
+                    float hue = 0.7f + (float) counter / 200f;
+                    int rgbColor = Color.HSBtoRGB(hue, 1f, 1f);
+                    imageDisplay.drawPixel(x, y, rgbColor);
+                }
+            }
         }
+        imageDisplay.repaint();
     }
 
     // Включение/отключение взаимодействия с GUI
@@ -141,44 +149,6 @@ public class FractalExplorer {
             double y = FractalGenerator.getCoord(range.y, range.y + range.width, displaySize, e.getY());
             fractalGenerator.recenterAndZoomRange(range, x, y, 0.5);
             drawFractal();
-        }
-    }
-
-    //Основная функция реализующая многопоточную обработку фракталов
-    public class FractalWorker extends SwingWorker<Object, Object> {
-        private int y_coord;
-        private int[] rgb;
-
-        public FractalWorker(int y_coord) {
-            this.y_coord = y_coord;
-        }
-
-        @Override
-        protected Object doInBackground() throws Exception {
-            rgb = new int[displaySize];
-            for (int i = 0; i < displaySize; i++) {
-                int count = fractalGenerator.numIterations(FractalGenerator.getCoord(range.x, range.x + range.width, displaySize, i),
-                        FractalGenerator.getCoord(range.y, range.y+range.width, displaySize, y_coord));
-                if (count == -1)
-                    rgb[i] = 0;
-                else {
-                    double hue = 0.7f + (float) count / 200f;
-                    int rgbColor = Color.HSBtoRGB((float) hue, 1f, 1f);
-                    rgb[i] = rgbColor;
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void done() {
-            for (int i = 0; i < displaySize; i++) {
-                imageDisplay.drawPixel(i, y_coord, rgb[i]);
-            }
-            imageDisplay.repaint(0,0,y_coord,displaySize,1);
-            rowsRemaining--;
-            if (rowsRemaining == 0)
-                enableGUI(true);
         }
     }
 }

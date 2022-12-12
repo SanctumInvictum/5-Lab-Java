@@ -12,8 +12,8 @@ public class Tricorn extends FractalGenerator {
     public void getInitialRange(Rectangle2D.Double range) {
         range.x = -2;
         range.y = -2;
-        range.height = 2;
-        range.width = 2;
+        range.height = 4;
+        range.width = 4;
     }
 
     //Проверяет конкретное местоположение на предмет того, есть ли оно в куче или нет.
