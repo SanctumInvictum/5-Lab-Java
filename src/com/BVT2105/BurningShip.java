@@ -2,18 +2,18 @@ package com.BVT2105;
 
 import java.awt.geom.Rectangle2D;
 
-//Этот класс предназначен для реализации алгоритма Мандельброта по построению фракталов
-public class Mandelbrot extends FractalGenerator {
+//Этот класс предназначен для реализации алгоритма построения фрактала "Пылающий корабль"
+public class BurningShip extends FractalGenerator {
     //Ограничитель, чтобы не перегрузить процессор
     public static final int MAX_ITERATIONS = 2000;
 
-    //Несколько приятных настроек по умолчанию для расположения изображения
+    //Поменяем начальный диапазон для нового фрактала
     @Override
     public void getInitialRange(Rectangle2D.Double range) {
         range.x = -2;
-        range.y = -1.5;
-        range.height = 3;
-        range.width = 3;
+        range.y = -2.5;
+        range.height = 2;
+        range.width = 1.5;
     }
 
     //Проверяет конкретное местоположение на предмет того, есть ли оно в куче или нет.
@@ -24,8 +24,8 @@ public class Mandelbrot extends FractalGenerator {
         int counter = 0;
         while (counter < MAX_ITERATIONS) {
             counter++;
-            double k = r * r - i*i+x;
-            double m = 2 * r * i + y;
+            double k = r * r - i * i + x;
+            double m = Math.abs(2 * r * i) + y;
             r = k;
             i = m;
             if (r*r+i*i > 4)
@@ -39,6 +39,6 @@ public class Mandelbrot extends FractalGenerator {
     // Добавим функцию, возвращающую название фрактала
     @Override
     public String toString() {
-        return "Mandelbrot";
+        return "Burning Ship";
     }
 }

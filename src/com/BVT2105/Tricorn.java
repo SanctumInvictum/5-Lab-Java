@@ -2,7 +2,7 @@ package com.BVT2105;
 
 import java.awt.geom.Rectangle2D;
 
-//Этот класс предназначен для реализации алгоритма Мандельброта по построению фракталов
+//Этот класс предназначен для реализации алгоритма построения трехцветного фрактала
 public class Tricorn extends FractalGenerator {
     //Ограничитель, чтобы не перегрузить процессор
     public static final int MAX_ITERATIONS = 2000;
